@@ -4,15 +4,52 @@
       <div
         class="bg-indigo-100 rounded-md justify-center items-center flex-initial w-3/12"
       >
-        <button
-          class="mt-3 focus:outline-none w-32 py-2 rounded-md font-semibold text-white bg-indigo-500 ring-4 ring-indigo-300"
-          @click="resetZoom"
-        >
-          Reset zoom
-        </button>
+        <p class="content-center mt-4">
+          <span>Layout: </span>
+          <select name="layout" id="layout" v-model="layout">
+            <option value="horizontal">Horizontal</option>
+            <option value="vertical">Vertical</option>
+            <option value="circular">Circular</option>
+          </select>
+        </p>
+        <p class="content-center mt-2">
+          <span>X distance: </span>
+          <input
+            type="range"
+            :min="-maxMargin"
+            :max="0"
+            v-model.number="marginX"
+            class="reversed-direction"
+          />
+        </p>
+        <p class="content-center mt-2">
+          <span>Y distance: </span>
+          <input
+            type="range"
+            :min="-maxMargin"
+            :max="0"
+            v-model.number="marginY"
+            class="reversed-direction"
+          />
+        </p>
+        <p class="mt-2">
+          <button
+            class="mt-3 focus:outline-none w-64 py-2 rounded-md font-semibold text-white bg-indigo-500 ring-4 ring-indigo-300"
+            @click="resetZoom"
+          >
+            Reset zoom
+          </button>
+        </p>
+        <p class="mt-2">
+          <button
+            class="mt-3 focus:outline-none w-64 py-2 rounded-md font-semibold text-white bg-green-500 ring-4 ring-green-300"
+            @click="downloadImage"
+          >
+            Download image
+          </button>
+        </p>
       </div>
       <div class="tree-container flex-1">
-        <h1 class="bg-green-500 rounded-md text-white font-bold">Title</h1>
         <tree
           :data="treeData"
           ref="tree"
@@ -23,10 +60,10 @@
           :zoomable="zoomable"
           :leafTextMargin="leafTextMargin"
           :node-text="nodeText"
-          :margin-x="Marginx"
-          :margin-y="Marginy"
+          :margin-x="marginX"
+          :margin-y="marginY"
           :radius="radius"
-          :layoutType="layoutType"
+          :layoutType="layout"
           :duration="duration"
           :minZoom="minZoom"
           :maxZoom="maxZoom"
@@ -39,6 +76,7 @@
 <script>
 import { tree } from "vued3tree";
 import json_data from "@/assets/data/tree.json";
+import d3ToPng from "d3-svg-to-png";
 
 export default {
   name: "App",
@@ -47,10 +85,11 @@ export default {
     return {
       treeData: json_data,
       type: "tree",
-      layoutType: "horizontal",
+      layout: "horizontal",
       duration: 750,
-      Marginx: 30,
-      Marginy: 30,
+      maxMargin: 200,
+      marginX: 0,
+      marginY: 0,
       radius: 3,
       leafTextMargin: 6,
       nodeTextMargin: 6,
@@ -60,7 +99,7 @@ export default {
       isLoading: false,
       nodeTextDisplay: "all",
       linkLayout: "bezier",
-      minZoom: 0.8,
+      minZoom: 0.1,
       maxZoom: 9,
       events: [],
     };
@@ -73,6 +112,13 @@ export default {
       this.isLoading = true;
       this.$refs["tree"].resetZoom().then(() => {
         this.isLoading = false;
+      });
+    },
+    downloadImage() {
+      d3ToPng("svg", "name.png", {
+        scale: 3,
+        format: "png",
+        quality: 1,
       });
     },
   },
@@ -94,5 +140,8 @@ export default {
 .tree-container {
   width: 100vw;
   height: 100vh;
+}
+.reversed-direction {
+  direction: rtl;
 }
 </style>
