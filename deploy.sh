@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/zsh
 # abort on errors
 set -e
 # build
@@ -10,6 +10,5 @@ cd dist
 git init
 git add -A
 git commit -m 'deploy'
-git push -f
-git@github.com:rubensmz/vue-d3-tree.git master:gh-pages
+git push -f git@github.com:rubensmz/vue-d3-tree.git master:gh-pages
 cd -

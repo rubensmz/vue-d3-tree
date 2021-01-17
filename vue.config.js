@@ -1,5 +1,5 @@
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production'
-      ? 'vue-d3-tree'
+      ? 'https://rubensmz.github.io/vue-d3-tree'
       : '/'
   }
